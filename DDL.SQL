@@ -152,7 +152,10 @@ CREATE TABLE InvoiceDetails (
 
 -- InvoiceDetails
 
--- Turns on foreign key checks and does a final commit
+-- Commits all changes to the database
+COMMIT; 
+
+-- Turns on foreign key checks and auto-commit
 SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
+SET AUTOCOMMIT = 1;
 
