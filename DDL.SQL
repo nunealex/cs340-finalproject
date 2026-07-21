@@ -143,6 +143,13 @@ CREATE TABLE InvoiceDetails (
 -- Customers
 
 -- Genres
+INSERT INTO Genres (genreName, description) VALUES 
+
+('Sports', 'Sports Genre'),
+
+('Pokemon', 'Niantic Cards'),
+
+('Magic', NULL);
 
 -- BoxSets
 
