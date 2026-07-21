@@ -110,7 +110,6 @@ CREATE TABLE Invoices (
     REFERENCES Stores(storeId)
     ON DELETE RESTRICT -- Cannot delete from the Stores table if in Invoices 
     ON UPDATE CASCADE -- inventoryId is updated in the Stores table, update in Invoices
-
 );
 
 -- Invoices Table: Intersection table between Stores and Customers
