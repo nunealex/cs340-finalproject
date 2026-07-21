@@ -3,7 +3,7 @@
 -- Project Group: 4
 -- Team Members: Alexander Nunez and Emmanuel Vazquez
 
--- Disables commits and foreign key checks
+-- Disables foreign key checks and auto-commits
 SET FOREIGN_KEY_CHECKS=0;
 SET AUTOCOMMIT = 0;
 
@@ -152,8 +152,7 @@ CREATE TABLE InvoiceDetails (
 
 -- InvoiceDetails
 
-
--- Turns commits and foreign key checks back on at the end of the file.
+-- Turns on foreign key checks and does a final commit
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
