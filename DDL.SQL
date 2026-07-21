@@ -105,7 +105,6 @@ CREATE TABLE Invoices (
     ON DELETE RESTRICT -- Cannot delete from the Customers table if in Invoices 
     ON UPDATE CASCADE, -- customerId is updated in the Customers table, update in Invoices
     
-
     CONSTRAINT InvoicesStores
     FOREIGN KEY (storeId)
     REFERENCES Stores(storeId)
