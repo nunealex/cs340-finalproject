@@ -32,9 +32,10 @@ CREATE TABLE Customers (
     customerId INT AUTO_INCREMENT NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    addressStreet VARCHAR(255) NULL,
+    addressStreet VARCHAR(50) NULL,
     addressCity TEXT NULL,
     addressState CHAR(2) NULL,
+    addressZip INT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL,
     PRIMARY KEY (customerId)
@@ -63,7 +64,7 @@ CREATE TABLE BoxSets (
     CONSTRAINT BoxSetsGenres
     FOREIGN KEY (genreId)
     REFERENCES Genres(genreId)
-    ON DELETE CASCADE -- genreId is deleted in the Genres table, delete from the BoxSets table
+    ON DELETE RESTRICT -- Cannot delete from the Genres table if in BoxSets
     ON UPDATE CASCADE -- genreId is updated in the Genres table, update in the BoxSets table
 );
 
@@ -75,6 +76,7 @@ CREATE TABLE StoreInventory (
     quantity INT NOT NULL DEFAULT 0,
 
     PRIMARY KEY (inventoryId),
+    UNIQUE (storeId, boxSetId),
 
     CONSTRAINT InventoryStores
     FOREIGN KEY (storeId)
@@ -89,13 +91,13 @@ CREATE TABLE StoreInventory (
     ON UPDATE CASCADE -- boxSetId is updated in the BoxSets table, update in StoreInventory 
 );
 
--- Invoices Table: Intersection table between Stores and Customers
+-- Invoices Table: Transaction table between Stores and Customers
 CREATE TABLE Invoices (
     invoiceId INT AUTO_INCREMENT NOT NULL,
     customerId INT NOT NULL,
     storeId INT NOT NULL,
     invoiceDate DATETIME NOT NULL,
-    total DECIMAL(10,2) NOT NULL DEFAULT 0.0,
+    total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
     PRIMARY KEY (invoiceId),
 
@@ -109,17 +111,17 @@ CREATE TABLE Invoices (
     FOREIGN KEY (storeId)
     REFERENCES Stores(storeId)
     ON DELETE RESTRICT -- Cannot delete from the Stores table if in Invoices 
-    ON UPDATE CASCADE -- inventoryId is updated in the Stores table, update in Invoices
+    ON UPDATE CASCADE -- storeId is updated in the Stores table, update in Invoices
 );
 
--- Invoices Table: Intersection table between Stores and Customers
+-- InvoiceDetails Table: Intersection table between BoxSets and Invoices
 CREATE TABLE InvoiceDetails (
     invoiceDetailId INT AUTO_INCREMENT NOT NULL,
     boxSetId INT NOT NULL,
     invoiceId INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
-    price DECIMAL(10,2) NOT NULL DEFAULT 0.0,
-    total DECIMAL(10,2) NOT NULL DEFAULT 0.0,
+    price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
     PRIMARY KEY (invoiceDetailId),
 
@@ -148,30 +150,30 @@ INSERT INTO Stores (storeName, city, state, phone, email) VALUES
 ('ZZ Trading Depot', 'Las Vegas', 'NV', '702-435-6267', 'help@zzdepot.com');
 
 -- Customers
-INSERT INTO Customers (firstName, lastName, addressStreet, addressCity, addressState, phone, email) VALUES
+INSERT INTO Customers (firstName, lastName, addressStreet, addressCity, addressState, addressZip, phone, email) VALUES
 
-('Alex', 'Nunez', '123 First St', 'San Jose', 'CA', '408-123-4567', 'nunealex@oregonstate.edu'),
+('Alex', 'Nunez', '123 First St', 'San Jose', 'CA', 90210, '408-123-4567', 'nunealex@oregonstate.edu'),
 
-('Emmanuel', 'Vazquez', '456 10th St', 'San Francisco', 'CA', '415-456-7890', 'emmanuel@oregonstate.edu'),
+('Emmanuel', 'Vazquez', '456 10th St', 'San Francisco', 'CA', 92131, '415-456-7890', 'emmanuel@oregonstate.edu'),
 
-('Barry', 'Bonds', '231 Mission St', 'San Francisco', 'CA', '415-325-8723', 'bonds@giants.com'),
+('Barry', 'Bonds', '231 Mission St', 'San Francisco', 'CA', 92132, '415-325-8723', 'bonds@giants.com'),
 
-('Ash', 'Ketchum', '2 Pallet Dr', 'Pallet Town', 'NV', '617-842-3521', 'ash@gottacatchemall.com');
+('Ash', 'Ketchum', '2 Pallet Dr', 'Pallet Town', 'NV', 56783, '617-842-3521', 'ash@gottacatchemall.com');
 
 -- Genres
 INSERT INTO Genres (genreName, description) VALUES 
 
 ('Basketball', 'Sports Genre'),
 
-('Pokemon', 'Pokemon Trading Card Game'),
+('Strategic', 'Turn-Based Strategy Game'),
 
-('Magic', 'Magic Trading Card Game'),
+('Build', 'Deck-Building Game'),
 
 ('Soccer', 'Sports Genre');
 
 -- BoxSets
 
-INSERT INTO BoxSets (genreID, name, edition, releaseYear, cost, salePrice) VALUES
+INSERT INTO BoxSets (genreId, name, edition, releaseYear, cost, salePrice) VALUES
 
 (1, 'Legends: Basketball', '1st Edition', 1996, 195.99, 249.99),
 
@@ -183,7 +185,7 @@ INSERT INTO BoxSets (genreID, name, edition, releaseYear, cost, salePrice) VALUE
 
 -- StoreInventory
 
-INSERT INTO StoreInventory (storeID, boxSetID, quantity) VALUES
+INSERT INTO StoreInventory (storeId, boxSetId, quantity) VALUES
 
 (3, 1, 5), -- Store 3 has 5 units of Legends: Basketball
 
@@ -197,17 +199,17 @@ INSERT INTO StoreInventory (storeID, boxSetID, quantity) VALUES
 
 -- Invoices
 
-INSERT INTO Invoices (customerID, storeID, invoiceDate, total) VALUES
+INSERT INTO Invoices (customerId, storeId, invoiceDate, total) VALUES
 
-(3, 1, '2026-05-13', 299.98), -- Barry Bonds bought 2 boxes of Secrets of Strixhaven
+(3, 1, '2026-05-13 13:43:58', 299.98), -- Barry Bonds bought 2 boxes of Secrets of Strixhaven
 
-(1, 2, '2026-04-17', 449.97), -- Alex Nunez bought 3 boxes of Secrets of Strixhaven
+(1, 2, '2026-04-17 15:16:54', 449.97), -- Alex Nunez bought 3 boxes of Secrets of Strixhaven
 
-(2, 3, '2025-09-24', 499.98); -- Emmanuel Vazquez bought 2 boxes of Legends: Basketball
+(2, 3, '2025-09-24 11:33:55', 499.98); -- Emmanuel Vazquez bought 2 boxes of Legends: Basketball
 
 -- InvoiceDetails
 
-INSERT INTO InvoiceDetails (boxSetID, invoiceID, quantity, price, total) VALUES
+INSERT INTO InvoiceDetails (boxSetId, invoiceId, quantity, price, total) VALUES
 
 (3, 1, 2, 149.99, 299.98),
 
