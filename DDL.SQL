@@ -18,18 +18,18 @@ DROP TABLE IF EXISTS `Stores`;
 
 -- Stores Table
 CREATE TABLE Stores (
-    storeId INT AUTO_INCREMENT NOT NULL,
+    storeID INT AUTO_INCREMENT NOT NULL,
     storeName VARCHAR(50) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state CHAR(2) NOT NULL,
     email VARCHAR(50) NULL UNIQUE,
     phone VARCHAR(20) NULL,
-    PRIMARY KEY (storeId)
+    PRIMARY KEY (storeID)
 );
 
 -- Customers Table
 CREATE TABLE Customers (
-    customerId INT AUTO_INCREMENT NOT NULL,
+    customerID INT AUTO_INCREMENT NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     addressStreet VARCHAR(50) NULL,
@@ -38,104 +38,102 @@ CREATE TABLE Customers (
     addressZip INT NULL,
     email VARCHAR(50) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL,
-    PRIMARY KEY (customerId)
+    PRIMARY KEY (customerID)
 );
 
 -- Genres Table
 CREATE TABLE Genres (
-    genreId INT AUTO_INCREMENT NOT NULL,
+    genreID INT AUTO_INCREMENT NOT NULL,
     genreName VARCHAR(50) NOT NULL UNIQUE,
     description TEXT NULL,
-    PRIMARY KEY (genreId)
+    PRIMARY KEY (genreID)
 );
 
 -- BoxSets Table
 CREATE TABLE BoxSets (
-    boxSetId INT AUTO_INCREMENT NOT NULL,
-    genreId INT NOT NULL,
+    boxSetID INT AUTO_INCREMENT NOT NULL,
+    genreID INT NOT NULL,
     name VARCHAR(50) NOT NULL,
-    edition VARCHAR(50) NULL,
+    edition VARCHAR(50) NOT NULL,
     releaseYear YEAR NULL,
     cost DECIMAL(10,2) NOT NULL,
     salePrice DECIMAL(10,2) NOT NULL,
 
-    PRIMARY KEY (boxSetId),
+    PRIMARY KEY (boxSetID),
 
     CONSTRAINT BoxSetsGenres
-    FOREIGN KEY (genreId)
-    REFERENCES Genres(genreId)
+    FOREIGN KEY (genreID)
+    REFERENCES Genres(genreID)
     ON DELETE RESTRICT -- Cannot delete from the Genres table if in BoxSets
-    ON UPDATE CASCADE -- genreId is updated in the Genres table, update in the BoxSets table
+    ON UPDATE CASCADE -- genreID is updated in the Genres table, update in the BoxSets table
 );
 
 -- StoreInventory Table: Intersection table between Stores and BoxSets
 CREATE TABLE StoreInventory (
-    inventoryId INT AUTO_INCREMENT NOT NULL,
-    storeId INT NOT NULL,
-    boxSetId INT NOT NULL,
+    inventoryID INT AUTO_INCREMENT NOT NULL,
+    storeID INT NOT NULL,
+    boxSetID INT NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
 
-    PRIMARY KEY (inventoryId),
-    UNIQUE (storeId, boxSetId),
+    PRIMARY KEY (inventoryID),
+    UNIQUE (storeID, boxSetID),
 
     CONSTRAINT InventoryStores
-    FOREIGN KEY (storeId)
-    REFERENCES Stores(storeId)
+    FOREIGN KEY (storeID)
+    REFERENCES Stores(storeID)
     ON DELETE RESTRICT -- Cannot delete from the Stores table if in StoreInventory 
-    ON UPDATE CASCADE, -- storeId is updated in the Stores table, update in StoreInventory
+    ON UPDATE CASCADE, -- storeID is updated in the Stores table, update in StoreInventory
 
     CONSTRAINT InventoryBoxSets
-    FOREIGN KEY (boxSetId)
-    REFERENCES BoxSets(boxSetId)
+    FOREIGN KEY (boxSetID)
+    REFERENCES BoxSets(boxSetID)
     ON DELETE RESTRICT -- Cannot delete from the BoxSets table if in StoreInventory 
-    ON UPDATE CASCADE -- boxSetId is updated in the BoxSets table, update in StoreInventory 
+    ON UPDATE CASCADE -- boxSetID is updated in the BoxSets table, update in StoreInventory 
 );
 
 -- Invoices Table: Transaction table between Stores and Customers
 CREATE TABLE Invoices (
-    invoiceId INT AUTO_INCREMENT NOT NULL,
-    customerId INT NOT NULL,
-    storeId INT NOT NULL,
+    invoiceID INT AUTO_INCREMENT NOT NULL,
+    customerID INT NOT NULL,
+    storeID INT NOT NULL,
     invoiceDate DATETIME NOT NULL,
-    total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
-    PRIMARY KEY (invoiceId),
+    PRIMARY KEY (invoiceID),
 
     CONSTRAINT InvoicesCustomers
-    FOREIGN KEY (customerId)
-    REFERENCES Customers(customerId)
+    FOREIGN KEY (customerID)
+    REFERENCES Customers(customerID)
     ON DELETE RESTRICT -- Cannot delete from the Customers table if in Invoices 
-    ON UPDATE CASCADE, -- customerId is updated in the Customers table, update in Invoices
+    ON UPDATE CASCADE, -- customerID is updated in the Customers table, update in Invoices
     
     CONSTRAINT InvoicesStores
-    FOREIGN KEY (storeId)
-    REFERENCES Stores(storeId)
+    FOREIGN KEY (storeID)
+    REFERENCES Stores(storeID)
     ON DELETE RESTRICT -- Cannot delete from the Stores table if in Invoices 
-    ON UPDATE CASCADE -- storeId is updated in the Stores table, update in Invoices
+    ON UPDATE CASCADE -- storeID is updated in the Stores table, update in Invoices
 );
 
 -- InvoiceDetails Table: Intersection table between BoxSets and Invoices
 CREATE TABLE InvoiceDetails (
-    invoiceDetailId INT AUTO_INCREMENT NOT NULL,
-    boxSetId INT NOT NULL,
-    invoiceId INT NOT NULL,
+    invoiceDetailID INT AUTO_INCREMENT NOT NULL,
+    boxSetID INT NOT NULL,
+    invoiceID INT NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
-    PRIMARY KEY (invoiceDetailId),
+    PRIMARY KEY (invoiceDetailID),
 
     CONSTRAINT InvoiceBoxSetsDetails
-    FOREIGN KEY (boxSetId)
-    REFERENCES BoxSets(boxSetId)
+    FOREIGN KEY (boxSetID)
+    REFERENCES BoxSets(boxSetID)
     ON DELETE RESTRICT -- Cannot delete from the BoxSets table if in InvoiceDetails 
-    ON UPDATE CASCADE, -- boxSetId is updated in the BoxSets table, update in InvoiceDetails
+    ON UPDATE CASCADE, -- boxSetID is updated in the BoxSets table, update in InvoiceDetails
 
     CONSTRAINT InvoiceInvoicesDetails
-    FOREIGN KEY (invoiceId)
-    REFERENCES Invoices(invoiceId)
+    FOREIGN KEY (invoiceID)
+    REFERENCES Invoices(invoiceID)
     ON DELETE RESTRICT -- Cannot delete from the Invoices table if in InvoiceDetails 
-    ON UPDATE CASCADE -- invoiceId is updated in the Invoices table, update in InvoiceDetails
+    ON UPDATE CASCADE -- invoiceID is updated in the Invoices table, update in InvoiceDetails
 );
 
 -- Example Data (3-5 rows per table)
@@ -173,7 +171,7 @@ INSERT INTO Genres (genreName, description) VALUES
 
 -- BoxSets
 
-INSERT INTO BoxSets (genreId, name, edition, releaseYear, cost, salePrice) VALUES
+INSERT INTO BoxSets (genreID, name, edition, releaseYear, cost, salePrice) VALUES
 
 (1, 'Legends: Basketball', '1st Edition', 1996, 195.99, 249.99),
 
@@ -185,7 +183,7 @@ INSERT INTO BoxSets (genreId, name, edition, releaseYear, cost, salePrice) VALUE
 
 -- StoreInventory
 
-INSERT INTO StoreInventory (storeId, boxSetId, quantity) VALUES
+INSERT INTO StoreInventory (storeID, boxSetID, quantity) VALUES
 
 (3, 1, 5), -- Store 3 has 5 units of Legends: Basketball
 
@@ -199,23 +197,25 @@ INSERT INTO StoreInventory (storeId, boxSetId, quantity) VALUES
 
 -- Invoices
 
-INSERT INTO Invoices (customerId, storeId, invoiceDate, total) VALUES
+INSERT INTO Invoices (customerID, storeID, invoiceDate) VALUES
 
-(3, 1, '2026-05-13 13:43:58', 299.98), -- Barry Bonds bought 2 boxes of Secrets of Strixhaven
+(3, 1, '2026-05-13 13:43:58'), -- Barry Bonds made a purchase on May 13
 
-(1, 2, '2026-04-17 15:16:54', 449.97), -- Alex Nunez bought 3 boxes of Secrets of Strixhaven
+(1, 2, '2026-04-17 15:16:54'), -- Alex Nunez made a purchase on April 17
 
-(2, 3, '2025-09-24 11:33:55', 499.98); -- Emmanuel Vazquez bought 2 boxes of Legends: Basketball
+(2, 3, '2025-09-24 11:33:55'); -- Emmanuel Vazquez made a purchase on September 24
 
 -- InvoiceDetails
 
-INSERT INTO InvoiceDetails (boxSetId, invoiceId, quantity, price, total) VALUES
+INSERT INTO InvoiceDetails (boxSetID, invoiceID, quantity, price) VALUES
 
-(3, 1, 2, 149.99, 299.98),
+(3, 1, 2, 149.99), -- 2 of Box Set 3 were purchased on Invoice 1
 
-(3, 2, 3, 149.99, 449.97),
+(3, 2, 3, 149.99), -- 3 of Box Set 3 were purchased on Invoice 2
 
-(1, 3, 2, 249.99, 499.98);
+(4, 2, 2, 99.99), -- 2 of Box Set 4 were purchased on Invoice 2
+
+(1, 3, 2, 249.99); -- 2 of Box Set 1 were purchased on Invoice 3
 
 -- Commits all changes to the database
 COMMIT; 
