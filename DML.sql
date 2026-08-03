@@ -1,36 +1,46 @@
 -- Project Title: Trading Card Box Set Sales Management System
 -- Group 4: Alexander Nunez and Emmanuel Vazquez
 -- ':' will be our designator for variable passed in
+-- CREATE, UPDATE, and DELETE operations will be executed in the application through stored procedures.
+-- Originality: Queries and operations were created by the team.
+-- AI Scope: Reviewed against the rubric with assistance from Claude.
+-- Source: https://claude.ai
+-- Date: August 2026
 
-
+-- ----------------
 -- Stores --
+-- ----------------
 -- READ - Stores --
 SELECT
     Stores.storeID,
     Stores.storeName,
+    Stores.street,
     Stores.city,
     Stores.state,
+    Stores.zip,
     Stores.phone,
     Stores.email
 FROM Stores;
 
-
+-- -----------------
 -- Customers --
+-- -----------------
 -- READ - Customers --
 SELECT
     Customers.customerID,
     Customers.firstName,
     Customers.lastName,
-    Customers.addressStreet,
-    Customers.addressCity,
-    Customers.addressState,
-    Customers.addressZip,
+    Customers.street,
+    Customers.city,
+    Customers.state,
+    Customers.zip,
     Customers.phone,
     Customers.email
 FROM Customers;
 
-
+-- ----------------
 -- Genres --
+-- ----------------
 -- READ - Genres --
 SELECT
     Genres.genreID,
@@ -38,8 +48,9 @@ SELECT
     Genres.description
 FROM Genres;
 
-
+-- -----------------
 -- BoxSets --
+-- -----------------
 -- READ - BoxSets --
 SELECT
     BoxSets.boxSetID,
@@ -52,8 +63,9 @@ SELECT
 FROM BoxSets
 INNER JOIN Genres ON BoxSets.genreID = Genres.genreID;
 
-
+-- -----------------
 -- StoreInventory --
+-- -----------------
 -- READ - StoreInventory --
 SELECT
     StoreInventory.inventoryID,
@@ -64,8 +76,9 @@ FROM StoreInventory
 INNER JOIN Stores ON StoreInventory.storeID = Stores.storeID
 INNER JOIN BoxSets ON StoreInventory.boxSetID = BoxSets.boxSetID;
 
-
+-- -----------------
 -- Invoices --
+-- -----------------
 -- READ - Invoices --
 SELECT
     Invoices.invoiceID,
@@ -96,8 +109,9 @@ ORDER BY Stores.storeName;
 INSERT INTO Invoices (customerID, storeID, invoiceDate) 
 VALUES (:customerID_dropdown_Input, :storeID_dropdown_Input, NOW());
 
-
+-- -----------------
 -- InvoiceDetails --
+-- -----------------
 -- READ - InvoiceDetails --
 SELECT
     InvoiceDetails.invoiceDetailID,
@@ -143,7 +157,18 @@ DELETE FROM InvoiceDetails
 WHERE invoiceDetailID = :invoiceDetailID_to_be_deleted;
 
 
--- UPDATE - InvoiceDetails -
+-- UPDATE - InvoiceDetails --
+-- get the current values of an invoice detail to pre-fill the update form
+SELECT 
+    InvoiceDetails.invoiceDetailID,
+    InvoiceDetails.boxSetID,
+    InvoiceDetails.invoiceID,
+    InvoiceDetails.quantity,
+    InvoiceDetails.price
+FROM InvoiceDetails
+WHERE InvoiceDetails.invoiceDetailID = :invoiceDetailID_from_the_update_form;
+
+-- update the InvoiceDetails for a specific invoice detail
 UPDATE InvoiceDetails 
 SET boxSetID = :boxSetID_dropdown_Input, invoiceID = :invoiceID_dropdown_Input, quantity = :quantity_update, price = :price_update 
 WHERE invoiceDetailID= :invoiceDetailID_from_the_update_form;
