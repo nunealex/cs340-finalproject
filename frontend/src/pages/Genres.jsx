@@ -1,4 +1,6 @@
-function Genres() {
+import GenreData from "../components/GenreData";
+
+function Genres({ genre }) {
     return (
         <> 
             <h1>Genres</h1>
@@ -15,29 +17,14 @@ function Genres() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Basketball</td>
-                        <td>Sports Genre</td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Strategic</td>
-                        <td>Turn-Based Strategy Game</td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>Build</td>
-                        <td>Deck-Building Game</td>
-                    </tr>
-
-                    <tr>
-                        <td>4</td>
-                        <td>Soccer</td>
-                        <td>Sports Genre</td>
-                    </tr>
+                    {/*Maps data to a table*/}
+                    {genre.map(genre => (
+                        <tr key={genre.genreID}>
+                            <td>{genre.genreID}</td>
+                            <td>{genre.genreName}</td>
+                            <td>{genre.description}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </>

@@ -1,7 +1,8 @@
 import CreateInvoiceForm from "../components/CreateInvoiceForm";
+import InvoiceData from "../components/InvoiceData";
 import { useNavigate } from "react-router-dom";
 
-function Invoices() {
+function Invoices({ invoice }) {
     const navigate = useNavigate();
     return (
         <>
@@ -14,32 +15,21 @@ function Invoices() {
                 <thead>
                     <tr>
                         <th>Invoice ID</th>
-                        <th>Customer ID</th>
-                        <th>Store ID</th>
+                        <th>Customer</th>
+                        <th>Store</th>
                         <th>Invoice Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>3</td>
-                        <td>1</td>
-                        <td>2026-05-13 13:43:58 </td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>2026-04-17 15:16:54 </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>2025-09-24 11:33:55  </td>
-                    </tr>
+                    {/*Maps data to a table*/}
+                    {invoice.map(invoice => (
+                        <tr key={invoice.invoiceID}>
+                            <td>{invoice.invoiceID}</td>
+                            <td>{invoice.Customer}</td>
+                            <td>{invoice.Store}</td>
+                            <td>{invoice.invoiceDate}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             <button className="createButton" onClick={() => navigate('/newinvoice')}>Create New Invoice</button>

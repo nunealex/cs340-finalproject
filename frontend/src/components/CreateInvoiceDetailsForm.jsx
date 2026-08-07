@@ -7,22 +7,35 @@
 // #Contains the code for the Create Invoice Details form.
 */}
 
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const CreateInvoiceDetailsForm = ({ }) => {
+const CreateInvoiceDetailsForm = ({}) => {
 
+    const [invoice, setInvoices] = useState([]);
+    const [boxset, setBoxSet] = useState([]);
+
+    const loadInvoices = async () => {
+    const res = await fetch("http://classwork.engr.oregonstate.edu:4029/read-invoices");
+    setInvoices(await res.json());
+    };
+
+    const loadBoxSets = async () => {
+    const res = await fetch("http://classwork.engr.oregonstate.edu:4029/read-boxsets");
+    setBoxSet(await res.json());
+    };
+
+    useEffect(() => {
+        loadInvoices();
+        loadBoxSets();
+    }, []);
+    
     const navigate = useNavigate();
     return (
         <>
         <h2>Enter Details for a new Invoice</h2>
 
         <form className='cuForm' type="button">
-            <label htmlFor="invoice_date">Date</label>
-            <input
-                type="date"
-                name="invoice_date"
-                id="incoide_date"
-            />
 
             <label htmlFor="invoice_detail_qty">Quantity: </label>
             <input
@@ -44,7 +57,16 @@ const CreateInvoiceDetailsForm = ({ }) => {
                 id="invoice_id"
             >
                 <option value="">Select an Invoice</option>
-                <option value="NULL">&lt; None &gt;</option>
+
+                {invoice.map(invoice => (
+                    <option 
+                        key={invoice.invoiceID}
+                        value={invoice.invoiceID}
+                    >
+                        {invoice.invoiceID}
+                    </option>
+                ))}
+                
             </select>
 
             <label htmlFor="invoice_detail_boxset">Box Set: </label>
@@ -53,7 +75,14 @@ const CreateInvoiceDetailsForm = ({ }) => {
                 id="invoice_detail_boxset"
             >
                 <option value="">Select a Box Set</option>
-                <option value="NULL">&lt; None &gt;</option>
+                {boxset.map(boxset => (
+                    <option 
+                    key={boxset.boxSetID}
+                    value={boxset.boxSetID}
+                    >
+                        {boxset.name}
+                    </option>
+                ))}
             </select>
 
             <button className="createButton" onClick={() => navigate('/details')}>Create</button>

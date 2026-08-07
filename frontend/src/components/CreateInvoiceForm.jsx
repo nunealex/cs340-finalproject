@@ -7,8 +7,27 @@
 */}
 
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const CreateInvoiceForm = ({ }) => {
+
+    const [customer, setCustomer] = useState([]);
+    const [store, setStore] = useState([]);
+    
+    const loadCustomer = async () => {
+    const res = await fetch("http://classwork.engr.oregonstate.edu:4029/read-customers");
+    setCustomer(await res.json());
+    };
+    
+    const loadStores = async () => {
+    const res = await fetch("http://classwork.engr.oregonstate.edu:4029/read-stores");
+    setStore(await res.json());
+    };
+    
+    useEffect(() => {
+        loadCustomer();
+        loadStores();
+    }, []);
 
     const navigate = useNavigate();
     return (
@@ -23,14 +42,20 @@ const CreateInvoiceForm = ({ }) => {
                 id="incoide_date"
             />
 
-
             <label htmlFor="invoice_customer">Customers: </label>
             <select
                 name="invoice_customer"
                 id="invoice_customer"
             >
                 <option value="">Select a Customer</option>
-                <option value="NULL">&lt; None &gt;</option>
+                {customer.map(customer => (
+                    <option 
+                        key={customer.customerID}
+                        value={customer.customerID}
+                    >
+                        {customer.firstName} {customer.lastName}
+                    </option>
+                ))}
             </select>
 
             <label htmlFor="invoice_store">Stores: </label>
@@ -39,7 +64,14 @@ const CreateInvoiceForm = ({ }) => {
                 id="invoice_store"
             >
                 <option value="">Select a Store</option>
-                <option value="NULL">&lt; None &gt;</option>
+                {store.map(store => (
+                    <option 
+                        key={store.storeID}
+                        value={store.storeID}
+                    >
+                        {store.storeName}
+                    </option>
+                ))}
             </select>
 
             <button onClick={() => navigate('/invoices')}>Create</button>

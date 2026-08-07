@@ -1,4 +1,6 @@
-function StoreInventory() {
+import StoreInventoryData from "../components/StoreInventoryData";
+
+function StoreInventory({ inventory }) {
     return (
         <>
             <h1>Inventory</h1>
@@ -10,46 +12,21 @@ function StoreInventory() {
                 <thead>
                     <tr>
                         <th>Inventory ID</th>
-                        <th>Store ID</th>
-                        <th>Box Set ID</th>
+                        <th>Store</th>
+                        <th>Box Set</th>
                         <th>Quantity</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>3</td>
-                        <td>1</td>
-                        <td>5</td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>3</td>
-                        <td>25</td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>4</td>
-                        <td>100</td>
-                    </tr>
-
-                    <tr>
-                        <td>4</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>40</td>
-                    </tr>
-
-                    <tr>
-                        <td>5</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>15</td>
-                    </tr>
+                    {/*Maps data to a table*/}
+                    {inventory.map(inventory => (
+                        <tr key={inventory.inventoryID}>
+                            <td>{inventory.inventoryID}</td>
+                            <td>{inventory.Store}</td>
+                            <td>{inventory.BoxSet}</td>
+                            <td>{inventory.quantity}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </>

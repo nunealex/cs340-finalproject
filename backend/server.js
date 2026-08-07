@@ -11,6 +11,9 @@
 // Database
 const db = require('./database/db-connector');
 
+// Environmental Variable for password security
+require('dotenv').config();
+
 // Express
 const express = require('express');
 const app = express();
@@ -29,6 +32,201 @@ const PORT = 4029;
 // READ ROUTES
 app.get('/', async (req, res) => {
     res.send('Group 4 server is running!')
+});
+
+// Read data from Stores
+app.get('/read-stores', async (req, res) => {
+    const query = `SELECT
+    Stores.storeID,
+    Stores.storeName,
+    Stores.street,
+    Stores.city,
+    Stores.state,
+    Stores.zip,
+    Stores.phone,
+    Stores.email
+    FROM Stores;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from Customers
+app.get('/read-customers', async (req, res) => {
+    const query = `SELECT
+    Customers.customerID,
+    Customers.firstName,
+    Customers.lastName,
+    Customers.street,
+    Customers.city,
+    Customers.state,
+    Customers.zip,
+    Customers.phone,
+    Customers.email
+    FROM Customers;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from InvoiceDetails
+app.get('/read-invoice-details', async (req, res) => {
+    const query = `SELECT
+    InvoiceDetails.invoiceDetailID,
+    CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
+    CONCAT('Invoice #', Invoices.invoiceID,' ', Customers.lastName,' ', DATE(Invoices.invoiceDate)) AS Invoice,
+    InvoiceDetails.quantity,
+    InvoiceDetails.price
+    FROM InvoiceDetails
+    INNER JOIN BoxSets ON InvoiceDetails.boxSetID = BoxSets.boxSetID
+    INNER JOIN Invoices ON InvoiceDetails.invoiceID = Invoices.invoiceID
+    INNER JOIN Customers ON Invoices.customerID = Customers.customerID;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from Store Inventory
+app.get('/read-inventory', async (req, res) => {
+    const query = `SELECT
+    StoreInventory.inventoryID,
+    Stores.storeName AS Store,
+    CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
+    StoreInventory.quantity
+    FROM StoreInventory
+    INNER JOIN Stores ON StoreInventory.storeID = Stores.storeID
+    INNER JOIN BoxSets ON StoreInventory.boxSetID = BoxSets.boxSetID
+    ORDER BY StoreInventory.inventoryID;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read specific Invoice
+app.get('/read-invoice-detail/:id', async (req, res) => {
+    const query = `SELECT
+    invoiceDetailID,
+    invoiceID,
+    boxSetID,
+    quantity,
+    price
+    FROM InvoiceDetails
+    WHERE invoiceDetailID = ?;`;
+
+    try {
+        const [results] = await db.query(query, [req.params.id]);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from Invoices
+app.get('/read-invoices', async (req, res) => {
+    const query = `SELECT
+    Invoices.invoiceID,
+    CONCAT(Customers.lastName, ', ', Customers.firstName) AS Customer,
+    Stores.storeName AS Store,
+    Invoices.invoiceDate
+    FROM Invoices
+    INNER JOIN Customers ON Invoices.customerID = Customers.customerID
+    INNER JOIN Stores ON Invoices.storeID = Stores.storeID;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from BoxSets
+app.get('/read-boxsets', async (req, res) => {
+    const query = `SELECT
+    BoxSets.boxSetID,
+    Genres.genreName AS genre,
+    BoxSets.name,
+    BoxSets.edition,
+    BoxSets.releaseYear,
+    BoxSets.cost,
+    BoxSets.salePrice
+    FROM BoxSets
+    INNER JOIN Genres ON BoxSets.genreID = Genres.genreID;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read data from Genres
+app.get('/read-genre', async (req, res) => {
+    const query = `SELECT
+    Genres.genreID,
+    Genres.genreName,
+    Genres.description
+    FROM Genres;`;
+
+    try {
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Delete Invoice Detail
+app.get('/delete-invoice-detail/:invoiceID', async function (req, res) {
+    try {
+        const query = `CALL sp_delete_invoicedetail(${req.params.invoiceID});`
+      await db.query(query);
+      res.status(200).send("Invoice Detail Deleted Successfully.");
+    } catch (error) {
+      console.error("Error deleting Invoice Detail", error);
+        // Send a generic error message to the browser
+      res.status(500).send("An error occurred while deleting the invoice detail.");
+    }
+});
+
+// Reset query route
+app.get('/reset', async function (req, res) {
+    try {
+        const reset = 'CALL sp_load_trading_card_box_set_system();'
+        await db.query(reset);
+
+        res.status(200).send("Database reset successful.");
+    } catch (error) {
+        console.error("Error executing reset procedure.", error)
+        // Send message to browser
+        res.status(500).send("An error occured while executing reset procedure.")
+    }
+
 });
 
 // ########################################

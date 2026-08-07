@@ -5,6 +5,9 @@
 // #No AI tools were used
 // #Contains the code to connect our backend to our database
 
+// Environmental Variable for Database Key
+const database_key = require('dotenv').config();
+
 // Get an instance of mysql we can use in the app
 let mysql = require('mysql2')
 
@@ -13,9 +16,9 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit   : 10,
     host              : 'classmysql.engr.oregonstate.edu',
-    user              : 'cs340_[your_onid]',
-    password          : '[your_db_password]',
-    database          : 'cs340_[your_onid]'
+    user              : 'cs340_nunealex',
+    password          : process.env.DB_PASSWORD,
+    database          : 'cs340_nunealex'
 }).promise(); // This makes it so we can use async / await rather than callbacks
 
 // Export it for use in our application

@@ -1,4 +1,7 @@
-function Stores() {
+import StoresData from "../components/StoresData";
+
+function Stores({ store }) {
+    
     return (
         <>
             <h1>Stores</h1>
@@ -11,39 +14,28 @@ function Stores() {
                     <tr>
                         <th>Store ID</th>
                         <th>Store Name</th>
+                        <th>Address</th>
                         <th>City</th>
                         <th>State</th>
+                        <th>Zipcode</th>
                         <th>Phone</th>
                         <th>Email</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>ZZ Trading Co.</td>
-                        <td>San Jose</td>
-                        <td>CA</td>
-                        <td>408-324-7426</td>
-                        <td>help@zztrading.com</td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>ZZ Trading Emporium</td>
-                        <td>San Francisco</td>
-                        <td>CA</td>
-                        <td>415-125-2314</td>
-                        <td>help@zzemporium.com</td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>ZZ Trading Depot</td>
-                        <td>Las Vegas</td>
-                        <td>NV</td>
-                        <td>702-435-6267</td>
-                        <td>help@zzdepot.com</td>
-                    </tr>
+                    {/*Maps data to a table*/}
+                    {store.map(store => (
+                        <tr key={store.storeID}>
+                            <td>{store.storeID}</td>
+                            <td>{store.storeName}</td>
+                            <td>{store.street}</td>
+                            <td>{store.city}</td>
+                            <td>{store.state}</td>
+                            <td>{store.zip}</td>
+                            <td>{store.phone}</td>
+                            <td>{store.email}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </>
