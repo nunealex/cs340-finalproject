@@ -3,7 +3,7 @@
 -- Project Group: 4
 -- Team Members: Alexander Nunez and Emmanuel Vazquez
 -- Originality: Procedures were created by the team.
--- AI Scope: Reviewed against the rubric with assistance from Claude.
+-- AI Scope: Used Claude to review the work against the rubric.
 -- Source: https://claude.ai
 -- Date: August 2026
 
