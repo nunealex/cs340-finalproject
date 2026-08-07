@@ -3,7 +3,7 @@
 -- ':' will be our designator for variable passed in
 -- CREATE, UPDATE, and DELETE operations will be executed in the application through stored procedures.
 -- Originality: Queries and operations were created by the team.
--- AI Scope: Reviewed against the rubric with assistance from Claude.
+-- AI Scope: Used Claude to review the work against the rubric.
 -- Source: https://claude.ai
 -- Date: August 2026
 
@@ -70,11 +70,12 @@ INNER JOIN Genres ON BoxSets.genreID = Genres.genreID;
 SELECT
     StoreInventory.inventoryID,
     Stores.storeName AS Store,
-    BoxSets.name AS BoxSet,
+    CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
     StoreInventory.quantity
 FROM StoreInventory
 INNER JOIN Stores ON StoreInventory.storeID = Stores.storeID
-INNER JOIN BoxSets ON StoreInventory.boxSetID = BoxSets.boxSetID;
+INNER JOIN BoxSets ON StoreInventory.boxSetID = BoxSets.boxSetID
+ORDER BY StoreInventory.inventoryID;
 
 -- -----------------
 -- Invoices --
@@ -115,7 +116,7 @@ VALUES (:customerID_dropdown_Input, :storeID_dropdown_Input, NOW());
 -- READ - InvoiceDetails --
 SELECT
     InvoiceDetails.invoiceDetailID,
-    BoxSets.name AS BoxSet,
+    CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
     CONCAT('Invoice #', Invoices.invoiceID,' ', Customers.lastName,' ', DATE(Invoices.invoiceDate)) AS Invoice,
     InvoiceDetails.quantity,
     InvoiceDetails.price
@@ -129,7 +130,7 @@ INNER JOIN Customers ON Invoices.customerID = Customers.customerID;
 -- get all BoxSets IDs and Names to populate the BoxSets Dropdown
 SELECT 
     BoxSets.boxSetID, 
-    CONCAT(BoxSets.name, ' ', BoxSets.edition) AS BoxSet 
+    CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet 
 FROM BoxSets
 ORDER BY BoxSets.name;
 
