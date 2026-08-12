@@ -48,9 +48,20 @@ export const UpdateInvoiceDetailsForm = ({invoiceDetail}) => {
     //Stops user from entering a negative number
     const handlePriceChange = () => {
         if (price.charAt(0) === "-" || !price){
-            setPrice(0);
+            window.alert("Invalid price")
+            navigate("/details");
         } else {
             setPrice(price);
+        }
+    };
+
+    //Stops user from entering a negative number for quantity
+    const handleQtyChange = () => {
+        if (quantity.charAt(0) === "-" || !quantity){
+            window.alert("Invalid quantity")
+            navigate("/details");
+        } else {
+            setQty(quantity);
         }
     };
 
@@ -125,7 +136,11 @@ export const UpdateInvoiceDetailsForm = ({invoiceDetail}) => {
                     value={quantity}
                     name="invoice_detail_quantity"
                     id="invoice_detail_quantity"
-                    onChange={(e) => setQty(e.target.value)}
+                    value={quantity}
+                    //Updates quantity in quantity field live
+                    onChange={(e) => {setQty(e.target.value)}}
+                    //Runs quantity validation to check for negative or empty values
+                    onBlur={(e) => handleQtyChange(quantity)}
                 />
 
                 <label htmlFor="invoice_detail_price">Price: </label>
@@ -141,6 +156,7 @@ export const UpdateInvoiceDetailsForm = ({invoiceDetail}) => {
                     onBlur={(e) => handlePriceChange(price)}
                 />
                 <button onClick={(e) => {UpdateInvoiceDetails(e)}}>Update</button>
+                <button className="cancelButton" onClick={(e) => {navigate("/details")}}>Cancel</button>
             </form>
         </>
     )

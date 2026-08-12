@@ -89,7 +89,8 @@ SELECT
     Invoices.invoiceDate
 FROM Invoices
 INNER JOIN Customers ON Invoices.customerID = Customers.customerID
-INNER JOIN Stores ON Invoices.storeID = Stores.storeID;
+INNER JOIN Stores ON Invoices.storeID = Stores.storeID
+ORDER BY Invoices.invoiceID ASC;
 
 
 -- CREATE - Invoices --

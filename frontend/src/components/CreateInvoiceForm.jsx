@@ -91,6 +91,7 @@ const CreateInvoiceForm = ({ }) => {
             </select>
 
             <button onClick={(e) => {CreateInvoice(e)}}>Create</button>
+            <button className="cancelButton" onClick={(e) => {navigate("/invoices")}}>Cancel</button>
         </form>
         </>
     );
