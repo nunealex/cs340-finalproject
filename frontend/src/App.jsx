@@ -1,11 +1,10 @@
-{/*
-// #Citation for the following JS file: App.jsx
-// #Date: 07/27/2026
-// #Adapted from Dr.Curry exploration "Web Application Technology" to include our web pages and include routes to our pages.
-// #https://canvas.oregonstate.edu/courses/2051721/pages/exploration-web-application-technology-2?module_item_id=26923351
-// #No AI tools were used
-// #Contains the skeleton code for the REACT app
-*/}
+// Project Title: Trading Card Box Set Sales Management System
+// Group 4: Alexander Nunez and Emmanuel Vazquez
+// Originality: Adapted from Dr.Curry exploration "Web Application Technology" to include our web pages and include routes to them.
+// Source: https://canvas.oregonstate.edu/courses/2051721/pages/exploration-web-application-technology-2?module_item_id=26923351 
+// AI Scope: AI tools were not used
+// Contains the skeleton code for the React app.
+// Date: July 27 2026
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';

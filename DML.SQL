@@ -84,6 +84,7 @@ ORDER BY StoreInventory.inventoryID;
 SELECT
     Invoices.invoiceID,
     CONCAT(Customers.lastName, ', ', Customers.firstName) AS Customer,
+    Customers.lastName,
     Stores.storeName AS Store,
     Invoices.invoiceDate
 FROM Invoices
@@ -118,12 +119,14 @@ SELECT
     InvoiceDetails.invoiceDetailID,
     CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
     CONCAT('Invoice #', Invoices.invoiceID,' ', Customers.lastName,' ', DATE(Invoices.invoiceDate)) AS Invoice,
+    Invoices.invoiceID,
     InvoiceDetails.quantity,
     InvoiceDetails.price
 FROM InvoiceDetails
 INNER JOIN BoxSets ON InvoiceDetails.boxSetID = BoxSets.boxSetID
 INNER JOIN Invoices ON InvoiceDetails.invoiceID = Invoices.invoiceID
-INNER JOIN Customers ON Invoices.customerID = Customers.customerID;
+INNER JOIN Customers ON Invoices.customerID = Customers.customerID
+ORDER BY InvoiceDetails.invoiceDetailID ASC;
 
 
 -- CREATE - InvoiceDetails --

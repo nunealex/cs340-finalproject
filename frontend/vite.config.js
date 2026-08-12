@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    port: 5183,
+    port: 5184,
     allowedHosts: ['classwork.engr.oregonstate.edu'],
   },
 })

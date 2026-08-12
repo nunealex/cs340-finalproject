@@ -1,3 +1,10 @@
+// Project Title: Trading Card Box Set Sales Management System
+// Group 4: Alexander Nunez and Emmanuel Vazquez
+// Originality: Original work by team.
+// AI Scope: AI tools were not used
+// Contains the code for the Invoice Details page.
+// Date: July 27, 2026
+
 import CreateInvoiceDetailsForm from "../components/CreateInvoiceDetailsForm";
 import { UpdateInvoiceDetailsForm } from "../components/UpdateInvoiceDetails";
 import {Link, useNavigate} from 'react-router-dom'
@@ -37,7 +44,7 @@ function InvoiceDetails({ invoiceDetail, deleteRow, reset }) {
                     ))}
                 </tbody>
             </table>
-            <button className="createButton" onClick={() => navigate('/createdetails')}>Create New Invoice Details</button>
+            <button className="createButton" onClick={() => navigate('/createdetails')}>Add New Details to Invoice</button>
             <button className="resetButton" onClick={() => reset()}>Reset Database</button>
 
 

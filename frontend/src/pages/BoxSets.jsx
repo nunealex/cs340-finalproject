@@ -1,3 +1,10 @@
+// Project Title: Trading Card Box Set Sales Management System
+// Group 4: Alexander Nunez and Emmanuel Vazquez
+// Originality: Original work by team.
+// AI Scope: AI tools were not used
+// Contains the code for the Box Sets page.
+// Date: July 27, 2026
+
 import BoxSetData from "../components/BoxSetData";
 
 function BoxSets({ boxset }) {

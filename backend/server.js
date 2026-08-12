@@ -31,7 +31,7 @@ const PORT = 4029;
 
 // READ ROUTES
 app.get('/', async (req, res) => {
-    res.send('Group 4 server is running!')
+    res.send('Group 4 dev server is running!')
 });
 
 // Read data from Stores
@@ -85,12 +85,14 @@ app.get('/read-invoice-details', async (req, res) => {
     InvoiceDetails.invoiceDetailID,
     CONCAT(BoxSets.name, ' - ', BoxSets.edition) AS BoxSet,
     CONCAT('Invoice #', Invoices.invoiceID,' ', Customers.lastName,' ', DATE(Invoices.invoiceDate)) AS Invoice,
+    Invoices.invoiceID,
     InvoiceDetails.quantity,
     InvoiceDetails.price
     FROM InvoiceDetails
     INNER JOIN BoxSets ON InvoiceDetails.boxSetID = BoxSets.boxSetID
     INNER JOIN Invoices ON InvoiceDetails.invoiceID = Invoices.invoiceID
-    INNER JOIN Customers ON Invoices.customerID = Customers.customerID;`;
+    INNER JOIN Customers ON Invoices.customerID = Customers.customerID
+    ORDER BY InvoiceDetails.invoiceDetailID ASC;`;
 
     try {
         const [results] = await db.query(query);
@@ -124,14 +126,30 @@ app.get('/read-inventory', async (req, res) => {
 
 // Read specific Invoice
 app.get('/read-invoice-detail/:id', async (req, res) => {
-    const query = `SELECT
-    invoiceDetailID,
-    invoiceID,
-    boxSetID,
-    quantity,
-    price
+    const query = `SELECT 
+    InvoiceDetails.invoiceDetailID,
+    InvoiceDetails.boxSetID,
+    InvoiceDetails.invoiceID,
+    InvoiceDetails.quantity,
+    InvoiceDetails.price
     FROM InvoiceDetails
-    WHERE invoiceDetailID = ?;`;
+    WHERE InvoiceDetails.invoiceDetailID = ?`;
+
+    try {
+        const [results] = await db.query(query, [req.params.id]);
+        res.json(results);
+    } catch (error) {
+        console.error("Error getting data from database.", error);
+        res.status(500).send("An error occured while fetching data from database.");
+    }
+});
+
+// Read price for specific box set
+app.get('/read-boxset-price/:id', async (req, res) => {
+    const query = `SELECT 
+    BoxSets.salePrice 
+    FROM BoxSets
+    WHERE BoxSets.boxSetID = ?;`;
 
     try {
         const [results] = await db.query(query, [req.params.id]);
@@ -147,6 +165,7 @@ app.get('/read-invoices', async (req, res) => {
     const query = `SELECT
     Invoices.invoiceID,
     CONCAT(Customers.lastName, ', ', Customers.firstName) AS Customer,
+    Customers.lastName,
     Stores.storeName AS Store,
     Invoices.invoiceDate
     FROM Invoices
@@ -225,6 +244,62 @@ app.get('/reset', async function (req, res) {
         console.error("Error executing reset procedure.", error)
         // Send message to browser
         res.status(500).send("An error occured while executing reset procedure.")
+    }
+
+});
+
+// Create new invoice route
+app.post('/create-invoice', async function (req, res) {
+    try {
+        const newCustID = req.body.customerID;
+        const store = req.body.storeID;
+        const createInvoice = `CALL sp_create_invoice(${newCustID}, ${store});`
+        await db.query(createInvoice);
+
+        res.status(200).send("New invoice created successfully.");
+    } catch (error) {
+        console.error("Error executing create invoice procedure.", error)
+        // Send message to browser
+        res.status(500).send("An error occured while creating new invoice.")
+    }
+
+});
+
+// Create new invoice detail route
+app.post('/create-invoice-details', async function (req, res) {
+    try {
+        const price = req.body.price;
+        const qty = req.body.quantity;
+        const selectedInvoice = req.body.invoiceID;
+        const selectedBoxSet = req.body.boxsetID;
+        const createInvoiceDetail = `CALL sp_create_invoicedetail(${selectedBoxSet}, ${selectedInvoice}, ${qty}, ${price});`
+        await db.query(createInvoiceDetail);
+
+        res.status(200).send("New invoice details created successfully.");
+    } catch (error) {
+        console.error("Error executing create invoice detail procedure.", error)
+        // Send message to browser
+        res.status(500).send("An error occured while creating new invoice details.")
+    }
+
+});
+
+// Create new invoice detail route
+app.post('/update-details', async function (req, res) {
+    try {
+        const price = req.body.price;
+        const qty = req.body.quantity;
+        const selectedInvoice = req.body.invoiceID;
+        const selectedBoxSet = req.body.boxsetID;
+        const selectedInvoiceDetail = req.body.invoiceDetailID;
+        const updateInvoiceDetail = `CALL sp_update_invoicedetail(${selectedInvoiceDetail}, ${selectedBoxSet}, ${selectedInvoice}, ${qty}, ${price});`
+        await db.query(updateInvoiceDetail);
+
+        res.status(200).send("Updated invoice details successfully.");
+    } catch (error) {
+        console.error("Error executing update invoice detail procedure.", error)
+        // Send message to browser
+        res.status(500).send("An error occured while updating invoice details.")
     }
 
 });
